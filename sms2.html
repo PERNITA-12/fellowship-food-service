@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fellowship Students Food Service (Upgraded)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+ }
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb); /* Lighter, friendlier gradient */
+    color: #263238;
+    overflow-x: hidden;
+    line-height: 1.6;
+ }
+
+  header {
+    text-align: center;
+    padding: 30px 10px;
+    background-color: #1e88e5; /* Primary color background */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 1.2s ease;
+  }
+  .logo {
+    display: inline-block;
+    font-size: 2.2em;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 400;
+    color: #e3f2fd;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #ffffff;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    animation: slideUp 1s ease;
+  }
+
+  .welcome h3 {
+    color: #1e88e5;
+    margin-bottom: 20px;
+  }
+   
+  .welcome input, #adminLogin input {
+    padding: 12px 15px;
+    width: 80%;
+    max-width: 350px;
+    border-radius: 10px;
+    border: 2px solid #cfd8dc;
+    margin-bottom: 15px;
+    font-size: 1.05em;
+    transition: border-color 0.3s;
+  }
+  .welcome input:focus, #adminLogin input:focus {
+    border-color: #1e88e5;
+    outline: none;
+  }
+  .welcome button {
+    background-color: #43a047;
+    padding: 12px 25px;
+  }
+
+  .food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f5f5f5;
+    border-radius: 15px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .food-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+  .food-item span {
+    font-weight: 600;
+    color: #37474f;
+    font-size: 1.1em;
+  }
+
+  .food-item input {
+    width: 80px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #90a4ae;
+    text-align: center;
+    font-size: 1em;
+  }
+  .food-item input:focus {
+    border-color: #1e88e5;
+    outline: none; 
+  }
+
+  .checkmark {
+    position: absolute;
+    right: 25px;
+    font-size: 1.5em;
+   color: #43a047;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .checkmark.show {
+    opacity: 1;
+    transform: scale(1.0);
+  }
+
+  #summary, #bank, .admin-summary {
+    margin-top: 25px;
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #bbdefb;
+  }
+  #summary h3, #bank h3, .admin-summary h3 {
+    color: #1e88e5;
+    border-bottom: 2px solid #bbdefb;
+    padding-bottom: 5px;
+   margin-top: 0;
+  }
+  #orderList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed #bbdefb;
+  }
+  .remove-item {
+    color: #e57373;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  #summary p strong {
+    font-size: 1.2em;
+    color: #d32f2f;
+  }
+
+  .admin-section {
+    display: none;
+    background: #ffffff;
+    border-radius: 25px;
+    padding: 30px;
+    margin: 30px auto;
+    max-width: 800px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    animation: fadeIn 1s ease;
+  }
+  #adminContent {
+    border-top: 2px dashed #bbdefb;
+    padding-top: 20px;
+  }
+
+  .locked {
+    pointer-events: none;
+    opacity: 0.4;
+    background: repeating-linear-gradient(
+      45deg,
+      #fce4ec,
+      #fce4ec 10px,
+      #ffffff 10px,
+      #ffffff 20px
+    );
+  }
+  .locked .food-item:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  button {
+    background-color: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s, transform 0.1s;
+  }
+  button:hover {
+    background-color: #1565c0;
+    transform: translateY(-1px);
+  }
+  button:active {
+    transform: translateY(0);
+  }
+
+  #submitOrderButton {
+    background-color: #43a047;
+    margin-right: 15px;
+  }
+  #submitOrderButton:hover {
+    background-color: #388e3c;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  @media (max-width: 650px) {
+    .food-item {
+      flex-wrap: wrap;
+    }
+    .food-item span {
+  width: 60%;
+}
+    .food-item input {
+  margin-top: 5px;
+}
+  }
+</style>
+</head>
+<body onload="init()">
+<header>
+<div class="logo">FSFS <i class="fas fa-utensils"></i></div>
+ <h1>Fellowship Students Food Service</h1>
+</header>
+
+<div class="container" id="userSection">
+ <div class="welcome" id="welcomeArea">
+ <h3>Welcome! Please enter your name to begin:</h3>
+ <input type="text" id="userName" placeholder="Enter your name" />
+ <br />
+ <button onclick="startOrdering()">Start Ordering <i class="fas fa-arrow-right"></i></button>
+ </div>
+
+<div id="orderArea" style="display:none;">
+ <h3><i class="fas fa-book-open"></i> Menu</h3>
+<div id="foodList">
+<div class="food-item" data-food="Rice" data-price="10">
+ <span>Rice - $10</span>
+ <input type="number" min="0" placeholder="Qty" oninput="updateOrder('Rice', 10, this)">
+ <div class="checkmark"><i class="fas fa-check"></i></div>
+ </div>
+ <div class="food-item" data-food="Bread" data-price="6">
+ <span>Bread - $6</span>
+ <input type="number" min="0" placeholder="Qty" oninput="updateOrder('Bread', 6, this)">
+ <div class="checkmark"><i class="fas fa-check"></i></div>
+ </div>
+ <div class="food-item" data-food="Pasta" data-price="12">
+ <span>Pasta - $12</span>
+ <input type="number" min="0" placeholder="Qty" oninput="updateOrder('Pasta', 12, this)">
+ <div class="checkmark"><i class="fas fa-check"></i></div>
+ </div>
+ <div class="food-item" data-food="Injera" data-price="8">
+ <span>Injera - $8</span>
+ <input type="number" min="0" placeholder="Qty" oninput="updateOrder('Injera', 8, this)">
+ <div class="checkmark"><i class="fas fa-check"></i></div>
+ </div>
+ </div>
+
+ <div id="summary">
+ <h3><i class="fas fa-receipt"></i> Your Current Order</h3>
+ <ul id="orderList"></ul>
+ <p><strong>Total:</strong> $<span id="total">0</span></p>
+ <div style="text-align:center; margin-top:15px;">
+ <button id="submitOrderButton" onclick="submitOrder()"><i class="fas fa-paper-plane"></i> Submit Order</button>
+ </div>
+ </div>
+
+ <div id="bank">
+ <h3><i class="fas fa-university"></i> Payment Details</h3>
+ <p>Account Name: **Fellowship Students**</p>
+ <p>Account Number: <span id="accNum">1234567890</span></p>
+ <button onclick="copyAccount()"><i class="far fa-copy"></i> Copy Account Number</button>
+ </div>
+
+ <div style="text-align:center; margin-top:25px;">
+ <button onclick="openAdmin()"><i class="fas fa-user-shield"></i> Admin Access</button>
+ </div>
+ </div>
+</div>
+
+<div class="admin-section" id="adminSection">
+ <h2><i class="fas fa-lock"></i> Admin Panel</h2>
+ <div id="adminLogin">
+ <input type="password" id="adminPass" placeholder="Enter admin password" />
+ <button onclick="loginAdmin()">Login</button>
+ </div>
+
+ <div id="adminContent" style="display:none;">
+ <button onclick="toggleLock()"><i class="fas fa-toggle-on"></i> Lock/Unlock Ordering</button>
+ <button onclick="clearOrders()"><i class="fas fa-trash-alt"></i> Clear All Orders</button>
+ <div id="allOrders" class="admin-summary"></div>
+ <div id="totalSummary" class="admin-summary"></div>
+ </div>
+</div>
+
+<script>
+ const ADMIN_PASS = "g0d i5 g00d";
+ const USERS_STORAGE_KEY = 'fsfs_all_users_orders';
+ const LOCK_STORAGE_KEY = 'fsfs_order_lock';
+ 
+  let users = [];
+ let locked = false;
+
+ function saveState() {
+ localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
+ localStorage.setItem(LOCK_STORAGE_KEY, JSON.stringify(locked));
+ }
+
+ function loadState() {
+ const savedUsers = localStorage.getItem(USERS_STORAGE_KEY);
+ const savedLock = localStorage.getItem(LOCK_STORAGE_KEY);
+
+ if (savedUsers) users = JSON.parse(savedUsers);
+ if (savedLock) locked = JSON.parse(savedLock);
+}
+
+ function init() {
+ loadState();
+ // Restore lock state on page load
+ const userSection = document.getElementById("userSection");
+ if (locked) userSection.classList.add("locked");
+ else userSection.classList.remove("locked");
+
+ // Auto-start if user name is in localStorage (or assume order in progress)
+ const savedName = localStorage.getItem('currentUser');
+ if (savedName) {
+ document.getElementById('userName').value = savedName;
+ startOrdering(true); // true to skip alert
+ }
+ }
+ function startOrdering(skipAlert = false) {
+ const name = document.getElementById('userName').value.trim();
+ if (!name) {
+ if (!skipAlert) alert("Please enter your name first.");
+ return;
+}
+
+ document.getElementById('welcomeArea').style.display = 'none';
+ document.getElementById('orderArea').style.display = 'block';
+ localStorage.setItem('currentUser', name);
+
+ // Load user's previous order to pre-fill inputs
+ const user = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+  if (user) {
+ user.orders.forEach(order => {
+ const itemDiv = document.querySelector(`.food-item[data-food="${order.food}"]`);
+ if (itemDiv) {
+ itemDiv.querySelector('input').value = order.qty;
+ }
+ });
+ updateUserSummary(user);
+ }
+ }
+// Renamed to updateOrder for clarity
+function updateOrder(food, price, input) {
+ if (locked) {
+ input.value = "";
+ return alert("Ordering is currently locked by the admin.");
+ }
+
+ let qty = parseInt(input.value);
+ const name = localStorage.getItem('currentUser');
+ if (!name) return alert("Enter your name first.");
+
+ const check = input.parentElement.querySelector(".checkmark");
+
+ let user = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+ if (!user) {
+ user = { name, orders: [], total: 0, submitted: false, time: new Date().toLocaleString() };
+ users.push(user);
+ }
+
+ if (!qty || qty <= 0) {
+ // Remove item from order
+      user.orders = user.orders.filter(o => o.food !== food);
+      input.value = ""; // Ensure input is 0 or empty
+      check.classList.remove("show");
+    } else {
+      // Add or update item in order
+      const existing = user.orders.find(o => o.food === food);
+      if (existing) existing.qty = qty;
+      else user.orders.push({ food, price, qty });
+      
+      check.classList.add("show");
+      setTimeout(() => check.classList.remove("show"), 800);
+    }
+
+    user.time = new Date().toLocaleString();
+    user.total = user.orders.reduce((sum, o) => sum + o.price * o.qty, 0);
+
+    saveState();
+    updateUserSummary(user);
+    refreshAdmin();
+  }
+
+  function removeItem(food) {
+    const name = localStorage.getItem('currentUser');
+    if (!name) return;
+    const user = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+    if (!user) return;
+
+    // Remove from user's order list
+    user.orders = user.orders.filter(o => o.food !== food);
+    user.total = user.orders.reduce((sum, o) => sum + o.price * o.qty, 0);
+
+    // Reset quantity input on the menu
+    const itemDiv = document.querySelector(`.food-item[data-food="${food}"]`);
+    if (itemDiv) itemDiv.querySelector('input').value = "";
+
+    saveState();
+    updateUserSummary(user);
+    refreshAdmin();
+  }
+
+  function updateUserSummary(user) {
+    const list = document.getElementById("orderList");
+    const total = document.getElementById("total");
+    list.innerHTML = "";
+    
+    if (user.orders.length === 0) {
+      list.innerHTML = '<li><p>Your basket is empty. Start adding items above!</p></li>';
+    } else {
+      user.orders.forEach(o => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${o.food} x ${o.qty} (@$${o.price})</span> 
+          <span>$${o.price * o.qty} <span class="remove-item" onclick="removeItem('${o.food}')"><i class="fas fa-times-circle"></i></span></span>
+        `;
+        list.appendChild(li);
+      });
+    }
+    
+    total.textContent = user.total;
+  }
+
+  function submitOrder() {
+    const name = localStorage.getItem('currentUser');
+    const user = users.find(u => u.name.toLowerCase() === name.toLowerCase());
+
+    if (!user || user.orders.length === 0) {
+      return alert("Please add items to your order before submitting.");
+    }
+
+    // Mark as submitted (or just update time/status)
+    user.submitted = true; 
+    user.time = new Date().toLocaleString();
+    saveState();
+    refreshAdmin();
+    alert(`Order submitted successfully for $${user.total}! Please make your payment.`);
+  }
+
+  function copyAccount() {
+    const acc = document.getElementById("accNum").textContent;
+    navigator.clipboard.writeText(acc).then(() => {
+      alert("Account number copied to clipboard!");
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+      alert("Failed to copy. Please manually copy the account number.");
+    });
+  }
+
+  function openAdmin() {
+    document.getElementById('adminSection').style.display = 'block';
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+
+  function loginAdmin() {
+    const pass = document.getElementById("adminPass").value;
+    if (pass !== ADMIN_PASS) {
+      alert("Incorrect password!");
+      return;
+    }
+    document.getElementById("adminLogin").style.display = "none";
+    document.getElementById("adminContent").style.display = "block";
+    refreshAdmin();
+  }
+
+  function toggleLock() {
+    locked = !locked;
+    const userSection = document.getElementById("userSection");
+    if (locked) {
+      userSection.classList.add("locked");
+      alert("Ordering locked for users!");
+    } else {
+      userSection.classList.remove("locked");
+      alert("Ordering unlocked!");
+    }
+    saveState();
+  }
+
+  function clearOrders() {
+    if (confirm("Are you sure you want to clear ALL user orders? This action cannot be undone.")) {
+      users = [];
+      saveState();
+      alert("All orders cleared!");
+      // Reset the current user's view
+      const currentName = localStorage.getItem('currentUser');
+      if (currentName) {
+        startOrdering(true); // Re-render the user's view (now empty)
+      }
+      refreshAdmin();
+    }
+  }
+
+  function refreshAdmin() {
+    const allOrdersDiv = document.getElementById("allOrders");
+    const totalSummaryDiv = document.getElementById("totalSummary");
+    allOrdersDiv.innerHTML = "<h3><i class='fas fa-list'></i> All User Orders</h3>";
+    totalSummaryDiv.innerHTML = "<h3><i class='fas fa-chart-bar'></i> Overall Food Summary</h3>";
+
+    if (users.length === 0) {
+      allOrdersDiv.innerHTML += "<p>No orders yet.</p>";
+      totalSummaryDiv.innerHTML += "<p>No data.</p>";
+      return;
+    }
+
+    let foodTotals = {};
+    let grandTotal = 0;
+
+    users.sort((a, b) => new Date(b.time) - new Date(a.time)); // Sort by newest first
+
+    users.forEach(user => {
+      const status = user.submitted ? ' (SUBMITTED)' : ' (IN DRAFT)';
+      const statusColor = user.submitted ? '#388e3c' : '#fbc02d';
+      
+      allOrdersDiv.innerHTML += `
+        <p>
+          <strong>${user.name}</strong> <span style="font-size:0.8em; color:${statusColor};">${status}</span> (${user.time})<br>
+          ${user.orders.map(o => `${o.food} x ${o.qty}`).join(", ")} — 
+          <b>Total: $${user.total}</b>
+        </p>
+      `;
+      
+      grandTotal += user.total;
+
+      user.orders.forEach(o => {
+        foodTotals[o.food] = (foodTotals[o.food] || 0) + o.qty;
+      });
+    });
+
+    let summaryText = "<ul>";
+    for (const food in foodTotals) {
+      summaryText += `<li><strong>${food}</strong>: ${foodTotals[food]} units</li>`;
+    }
+    summaryText += "</ul>";
+
+    totalSummaryDiv.innerHTML += summaryText;
+    totalSummaryDiv.innerHTML += `<p><strong>GRAND TOTAL REVENUE: $${grandTotal}</strong></p>`;
+  }
+</script>
+</body>
+</html>
